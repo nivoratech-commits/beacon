@@ -1,4 +1,4 @@
-import { PrismaClient, Platform } from '@prisma/client';
+import { PrismaClient, Platform, SyncItem } from '@prisma/client';
 import { ValidationError, NotFoundError, AppError } from '../utils/errors';
 import { ShopifyIntegration, createShopifyIntegration } from '../integrations/shopify';
 import { CarrierDetectionEngine } from '../integrations/carriers';
@@ -209,8 +209,8 @@ export class SyncService {
   /**
    * Sync items to platform (Shopify or Amazon)
    */
-  private async syncBatchItems(userId: string, platform: Platform, items: any[]) {
-    const results = [];
+  private async syncBatchItems(userId: string, platform: Platform, items: SyncItem[]) {
+    const results: Array<{ orderId: string; status: 'SYNCED' | 'FAILED'; errorMessage?: string }> = [];
 
     for (const item of items) {
       try {
@@ -239,7 +239,7 @@ export class SyncService {
   /**
    * Sync to Shopify
    */
-  private async syncToShopify(userId: string, item: any) {
+  private async syncToShopify(userId: string, item: SyncItem) {
     // Get active Shopify integration
     const integration = await prisma.integration.findFirst({
       where: {
@@ -273,7 +273,7 @@ export class SyncService {
   /**
    * Sync to Amazon
    */
-  private async syncToAmazon(userId: string, item: any) {
+  private async syncToAmazon(userId: string, item: SyncItem) {
     // Get active Amazon integration
     const integration = await prisma.integration.findFirst({
       where: {

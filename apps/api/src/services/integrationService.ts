@@ -1,4 +1,4 @@
-import { PrismaClient, Integration } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { NotFoundError, ValidationError } from '../utils/errors';
 import { createShopifyIntegration } from '../integrations/shopify';
 import crypto from 'crypto';
